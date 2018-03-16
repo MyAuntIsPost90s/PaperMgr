@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="Contents/lib/login-theme/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="Contents/lib/login-theme/assets/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="Contents/lib/login-theme/assets/css/form-elements.css?version=0">
+    <link rel="stylesheet" href="Contents/lib/login-theme/assets/css/style.css">
+    <link rel="stylesheet" href="Contents/lib/layui/css/layui.css">
+</head>
+<body>
+    <div class="top-content">
+        <div class="inner-bg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 col-sm-offset-2 text">
+                        <h1><strong>PaperMgr</strong> Login Form</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 phone">
+                        <img src="Contents/lib/login-theme/assets/img/iphone.png" alt="">
+                    </div>
+                    <div class="col-sm-5 form-box">
+                        <div class="form-top">
+                            <div class="form-top-left">
+                                <h3>Login to our App</h3>
+                                <p>wellcome to join us</p>
+                            </div>
+                            <div class="form-top-right">
+                                <i class="fa fa-pencil"></i>
+                            </div>
+                        </div>
+                        <div class="form-bottom">
+                            <form role="form" action="" method="post" class="registration-form">
+                                <div class="form-group">
+                                    <label class="sr-only" for="l_username">Username</label>
+                                    <input type="text" id="l_username" name="username" placeholder="Username" class="form-first-name form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="sr-only" for="l_password">Password</label>
+                                    <input type="password" id="l_password" name="password" placeholder="Password" class="form-last-name form-control" />
+                                </div>
+                                <button type="button" id="btn-login" class="btn">Sign me up!</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="Contents/js/jquery.min.js"></script>
+    <script src="Contents/js/config.js?version=1"></script>
+    <script src="Contents/lib/lingshiframework/lingshi_base.js"></script>
+    <script src="Contents/lib/login-theme/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="Contents/lib/login-theme/assets/js/jquery.backstretch.min.js"></script>
+    <script src="Contents/lib/login-theme/assets/js/retina-1.1.0.min.js"></script>
+    <script src="Contents/lib/login-theme/assets/js/scripts.js?version=0"></script>
+    <script src="Contents/lib/layui/layui.all.js"></script>
+    <script src="Contents/js/md5.js"></script>
+</body>
+<script>
+    $('#btn-login').click(function(){
+        var username=$('input[name=username]').val();
+        var password=$('input[name=password]').val();
+        if(username==''){
+            layer.msg('请输入用户名');
+            return;
+        }
+        if(password==''){
+            layer.msg('请输入密码')
+            return;
+        }
+
+        layer.open({ type:3 });
+        $.post(Config.UrlHead+'/account/login'
+            ,{ username:username,password:hex_md5(password).toUpperCase() }
+            ,function (data) {
+                layer.closeAll();
+                if(data.code==1&&data.data.usertype==-1){   //管理员
+                    loginSuccess('Admin/index.html');
+                }
+                if(data.code==1&&data.data.usertype==1){    //教师
+                    loginSuccess('Teacher/index.html');
+                    return;
+                }
+                if(data.code!=1){
+                    layer.msg(data.msg);
+                }
+            },'json')
+    });
+
+    function loginSuccess(url) {
+        layer.open({
+            type: 1
+            , area: ['200px','120px']
+            , time: 2000
+            , title: '提示'
+            , content: '<div style="text-align: center;font-size: 14px;line-height: 50px">登陆成功，正在跳转...</div>'
+            , end: function () {
+                window.location.href = url;
+            }
+        })
+    }
+</script>
+</html>

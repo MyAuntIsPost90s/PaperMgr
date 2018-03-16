@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="87eef43a-ef50-47bc-aa84-026ac5b627e2" name="localhost" url="http://localhost:8091/WebContent">
+        <fileTransfer port="0" mountedRoot="C:\Project\eclipse\PaperMgr\PaperMgrApp\WebContent" accessType="MOUNT" />
+      </webServer>
+    </option>
+  </component>
+</project>

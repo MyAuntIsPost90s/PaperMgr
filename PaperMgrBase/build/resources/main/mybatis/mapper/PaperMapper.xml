@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="papermgr.base.dao.PaperMapper" >
+  <select id="getList" resultType="papermgr.base.model.Paper" parameterType="papermgr.base.model.Paper" >
+    select * from paper
+    where 1=1
+    <if test="paperid != null" >
+      and paperId = #{paperid}
+    </if>
+    <if test="papertitle != null" >
+      and paperTitle = #{papertitle}
+    </if>
+    <if test="papergroupid != null" >
+      and paperGroupId = #{papergroupid}
+    </if>
+    <if test="papernote != null" >
+      and paperNote = #{papernote}
+    </if>
+    <if test="papertime != null" >
+      and paperTime = #{papertime}
+    </if>
+    <if test="subjectid != null" >
+      and subjectId = #{subjectid}
+    </if>
+  </select>
+  
+  <select id="getSingle" resultType="papermgr.base.model.Paper" >
+    select * from paper
+    where paperId = #{id}
+    limit 0,1
+  </select>
+  
+  <insert id="insert" parameterType="papermgr.base.model.Paper" >
+    insert into paper
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="paperid != null" >
+        paperId,
+      </if>
+      <if test="papertitle != null" >
+        paperTitle,
+      </if>
+      <if test="papergroupid != null" >
+        paperGroupId,
+      </if>
+      <if test="papernote != null" >
+        paperNote,
+      </if>
+      <if test="papertime != null" >
+        paperTime,
+      </if>
+      <if test="subjectid != null" >
+        subjectId
+      </if>
+    </trim>
+    <trim prefix="values(" suffix=")" suffixOverrides="," >
+      <if test="paperid != null" >
+        #{paperid},
+      </if>
+      <if test="papertitle != null" >
+        #{papertitle},
+      </if>
+      <if test="papergroupid != null" >
+        #{papergroupid},
+      </if>
+      <if test="papernote != null" >
+        #{papernote},
+      </if>
+      <if test="papertime != null" >
+        #{papertime},
+      </if>
+      <if test="subjectid != null" >
+        #{subjectid}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="update" parameterType="papermgr.base.model.Paper" >
+    update paper
+    <set >
+      <if test="papertitle != null" >
+        paperTitle = #{papertitle},
+      </if>
+      <if test="papergroupid != null" >
+        paperGroupId = #{papergroupid},
+      </if>
+      <if test="papernote != null" >
+        paperNote = #{papernote},
+      </if>
+      <if test="papertime != null" >
+        paperTime = #{papertime},
+      </if>
+      <if test="subjectid != null" >
+        subjectId = #{subjectid}
+      </if>
+    </set>
+    where
+    paperId = #{paperid}
+  </update>
+  
+  <delete id="batchDelete" >
+    delete from paper
+    where paperId in(
+    <foreach item="item" collection="list" separator="," >
+      #{item}
+    </foreach>
+    )
+  </delete>
+  
+  <select id="getListWithPage" resultType="papermgr.base.model.Paper" parameterType="papermgr.base.model.Paper" >
+    select * from paper
+    where 1=1
+    <if test="paperid != null" >
+      and paperId = #{paperid}
+    </if>
+    <if test="papertitle != null" >
+      and paperTitle = #{papertitle}
+    </if>
+    <if test="papergroupid != null" >
+      and paperGroupId = #{papergroupid}
+    </if>
+    <if test="papernote != null" >
+      and paperNote = #{papernote}
+    </if>
+    <if test="papertime != null" >
+      and paperTime = #{papertime}
+    </if>
+    <if test="subjectid != null" >
+      and subjectId = #{subjectid}
+    </if>
+  </select>
+  
+  <select id="count" resultType="java.lang.Long" parameterType="papermgr.base.model.Paper" >
+    select count(*) from paper
+    where 1=1
+    <if test="paperid != null" >
+      and paperId = #{paperid}
+    </if>
+    <if test="papertitle != null" >
+      and paperTitle = #{papertitle}
+    </if>
+    <if test="papergroupid != null" >
+      and paperGroupId = #{papergroupid}
+    </if>
+    <if test="papernote != null" >
+      and paperNote = #{papernote}
+    </if>
+    <if test="papertime != null" >
+      and paperTime = #{papertime}
+    </if>
+    <if test="subjectid != null" >
+      and subjectId = #{subjectid}
+    </if>
+  </select>
+  
+</mapper>

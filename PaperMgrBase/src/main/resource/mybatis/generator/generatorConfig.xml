@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration 
+    PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" 
+    "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+	<context id="context" targetRuntime="MyBatis3">
+	    <property name="javaFileEncoding" value="UTF-8"/>
+	  	<plugin type="lingshi.mybaties.mapperextend.LingShiMapperPlugin"></plugin>
+	    <commentGenerator>  
+            <property name="suppressDate" value="true" />  
+            <property name="suppressAllComments" value="true" />  
+        </commentGenerator>  
+		<jdbcConnection 
+		    driverClass="${driverClass}"
+			connectionURL="${connectionURL}"
+			userId="${userId}" 
+			password="${password}"/>
+		<javaModelGenerator 
+		    targetPackage="${modelPackage}"
+			targetProject="${srcMainJava}"/>
+		<sqlMapGenerator 
+		    targetPackage="${mapperPackage}"
+			targetProject="${srcMainResource}" />
+		<javaClientGenerator 
+		    targetPackage="${clientPackage}"
+			targetProject="${srcMainJava}" 
+			type="XMLMAPPER" />
+
+		<table tableName="%" enableCountByExample="false" enableInsert="true" enableDeleteByExample="false"
+		 	enableDeleteByPrimaryKey="false" enableSelectByExample="false" enableSelectByPrimaryKey="false"
+		 	enableUpdateByExample="false" enableUpdateByPrimaryKey="false" />
+	</context>
+</generatorConfiguration>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="papermgr.base.dao.SubjectMapper" >
+  <select id="getList" resultType="papermgr.base.model.Subject" parameterType="papermgr.base.model.Subject" >
+    select * from subject
+    where 1=1
+    <if test="subjectid != null" >
+      and subjectId = #{subjectid}
+    </if>
+    <if test="subjectname != null" >
+      and subjectName = #{subjectname}
+    </if>
+    <if test="subjecttime != null" >
+      and subjectTime = #{subjecttime}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+  </select>
+  
+  <select id="getSingle" resultType="papermgr.base.model.Subject" >
+    select * from subject
+    where subjectId = #{id}
+    limit 0,1
+  </select>
+  
+  <insert id="insert" parameterType="papermgr.base.model.Subject" >
+    insert into subject
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="subjectid != null" >
+        subjectId,
+      </if>
+      <if test="subjectname != null" >
+        subjectName,
+      </if>
+      <if test="subjecttime != null" >
+        subjectTime,
+      </if>
+      <if test="userid != null" >
+        userId
+      </if>
+    </trim>
+    <trim prefix="values(" suffix=")" suffixOverrides="," >
+      <if test="subjectid != null" >
+        #{subjectid},
+      </if>
+      <if test="subjectname != null" >
+        #{subjectname},
+      </if>
+      <if test="subjecttime != null" >
+        #{subjecttime},
+      </if>
+      <if test="userid != null" >
+        #{userid}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="update" parameterType="papermgr.base.model.Subject" >
+    update subject
+    <set >
+      <if test="subjectname != null" >
+        subjectName = #{subjectname},
+      </if>
+      <if test="subjecttime != null" >
+        subjectTime = #{subjecttime},
+      </if>
+      <if test="userid != null" >
+        userId = #{userid}
+      </if>
+    </set>
+    where
+    subjectId = #{subjectid}
+  </update>
+  
+  <delete id="batchDelete" >
+    delete from subject
+    where subjectId in(
+    <foreach item="item" collection="list" separator="," >
+      #{item}
+    </foreach>
+    )
+  </delete>
+  
+  <select id="getListWithPage" resultType="papermgr.base.model.Subject" parameterType="papermgr.base.model.Subject" >
+    select * from subject
+    where 1=1
+    <if test="subjectid != null" >
+      and subjectId = #{subjectid}
+    </if>
+    <if test="subjectname != null" >
+      and subjectName = #{subjectname}
+    </if>
+    <if test="subjecttime != null" >
+      and subjectTime = #{subjecttime}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+  </select>
+  
+  <select id="count" resultType="java.lang.Long" parameterType="papermgr.base.model.Subject" >
+    select count(*) from subject
+    where 1=1
+    <if test="subjectid != null" >
+      and subjectId = #{subjectid}
+    </if>
+    <if test="subjectname != null" >
+      and subjectName = #{subjectname}
+    </if>
+    <if test="subjecttime != null" >
+      and subjectTime = #{subjecttime}
+    </if>
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+  </select>
+  
+</mapper>

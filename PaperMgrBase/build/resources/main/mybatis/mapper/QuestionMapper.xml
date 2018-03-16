@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="papermgr.base.dao.QuestionMapper" >
+  <select id="getList" resultType="papermgr.base.model.Question" parameterType="papermgr.base.model.Question" >
+    select * from question
+    where 1=1
+    <if test="questionid != null" >
+      and questionId = #{questionid}
+    </if>
+    <if test="questioncontent != null" >
+      and questionContent = #{questioncontent}
+    </if>
+    <if test="questionselect != null" >
+      and questionSelect = #{questionselect}
+    </if>
+    <if test="questionanswer != null" >
+      and questionAnswer = #{questionanswer}
+    </if>
+    <if test="questiontype != null" >
+      and questionType = #{questiontype}
+    </if>
+    <if test="subjectid != null" >
+      and subjectId = #{subjectid}
+    </if>
+    <if test="questiontime != null" >
+      and questionTime = #{questiontime}
+    </if>
+  </select>
+  
+  <select id="getSingle" resultType="papermgr.base.model.Question" >
+    select * from question
+    where questionId = #{id}
+    limit 0,1
+  </select>
+  
+  <insert id="insert" parameterType="papermgr.base.model.Question" >
+    insert into question
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="questionid != null" >
+        questionId,
+      </if>
+      <if test="questioncontent != null" >
+        questionContent,
+      </if>
+      <if test="questionselect != null" >
+        questionSelect,
+      </if>
+      <if test="questionanswer != null" >
+        questionAnswer,
+      </if>
+      <if test="questiontype != null" >
+        questionType,
+      </if>
+      <if test="subjectid != null" >
+        subjectId,
+      </if>
+      <if test="questiontime != null" >
+        questionTime
+      </if>
+    </trim>
+    <trim prefix="values(" suffix=")" suffixOverrides="," >
+      <if test="questionid != null" >
+        #{questionid},
+      </if>
+      <if test="questioncontent != null" >
+        #{questioncontent},
+      </if>
+      <if test="questionselect != null" >
+        #{questionselect},
+      </if>
+      <if test="questionanswer != null" >
+        #{questionanswer},
+      </if>
+      <if test="questiontype != null" >
+        #{questiontype},
+      </if>
+      <if test="subjectid != null" >
+        #{subjectid},
+      </if>
+      <if test="questiontime != null" >
+        #{questiontime}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="update" parameterType="papermgr.base.model.Question" >
+    update question
+    <set >
+      <if test="questioncontent != null" >
+        questionContent = #{questioncontent},
+      </if>
+      <if test="questionselect != null" >
+        questionSelect = #{questionselect},
+      </if>
+      <if test="questionanswer != null" >
+        questionAnswer = #{questionanswer},
+      </if>
+      <if test="questiontype != null" >
+        questionType = #{questiontype},
+      </if>
+      <if test="subjectid != null" >
+        subjectId = #{subjectid},
+      </if>
+      <if test="questiontime != null" >
+        questionTime = #{questiontime}
+      </if>
+    </set>
+    where
+    questionId = #{questionid}
+  </update>
+  
+  <delete id="batchDelete" >
+    delete from question
+    where questionId in(
+    <foreach item="item" collection="list" separator="," >
+      #{item}
+    </foreach>
+    )
+  </delete>
+  
+  <select id="getListWithPage" resultType="papermgr.base.model.Question" parameterType="papermgr.base.model.Question" >
+    select * from question
+    where 1=1
+    <if test="questionid != null" >
+      and questionId = #{questionid}
+    </if>
+    <if test="questioncontent != null" >
+      and questionContent = #{questioncontent}
+    </if>
+    <if test="questionselect != null" >
+      and questionSelect = #{questionselect}
+    </if>
+    <if test="questionanswer != null" >
+      and questionAnswer = #{questionanswer}
+    </if>
+    <if test="questiontype != null" >
+      and questionType = #{questiontype}
+    </if>
+    <if test="subjectid != null" >
+      and subjectId = #{subjectid}
+    </if>
+    <if test="questiontime != null" >
+      and questionTime = #{questiontime}
+    </if>
+  </select>
+  
+  <select id="count" resultType="java.lang.Long" parameterType="papermgr.base.model.Question" >
+    select count(*) from question
+    where 1=1
+    <if test="questionid != null" >
+      and questionId = #{questionid}
+    </if>
+    <if test="questioncontent != null" >
+      and questionContent = #{questioncontent}
+    </if>
+    <if test="questionselect != null" >
+      and questionSelect = #{questionselect}
+    </if>
+    <if test="questionanswer != null" >
+      and questionAnswer = #{questionanswer}
+    </if>
+    <if test="questiontype != null" >
+      and questionType = #{questiontype}
+    </if>
+    <if test="subjectid != null" >
+      and subjectId = #{subjectid}
+    </if>
+    <if test="questiontime != null" >
+      and questionTime = #{questiontime}
+    </if>
+  </select>
+  
+</mapper>

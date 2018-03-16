@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="papermgr.base.dao.PaperquestionMapper" >
+  <select id="getList" resultType="papermgr.base.model.Paperquestion" parameterType="papermgr.base.model.Paperquestion" >
+    select * from paperquestion
+    where 1=1
+    <if test="paperquestionid != null" >
+      and paperQuestionId = #{paperquestionid}
+    </if>
+    <if test="paperid != null" >
+      and paperId = #{paperid}
+    </if>
+    <if test="questionid != null" >
+      and questionId = #{questionid}
+    </if>
+  </select>
+  
+  <select id="getSingle" resultType="papermgr.base.model.Paperquestion" >
+    select * from paperquestion
+    where paperQuestionId = #{id}
+    limit 0,1
+  </select>
+  
+  <insert id="insert" parameterType="papermgr.base.model.Paperquestion" >
+    insert into paperquestion
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="paperquestionid != null" >
+        paperQuestionId,
+      </if>
+      <if test="paperid != null" >
+        paperId,
+      </if>
+      <if test="questionid != null" >
+        questionId
+      </if>
+    </trim>
+    <trim prefix="values(" suffix=")" suffixOverrides="," >
+      <if test="paperquestionid != null" >
+        #{paperquestionid},
+      </if>
+      <if test="paperid != null" >
+        #{paperid},
+      </if>
+      <if test="questionid != null" >
+        #{questionid}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="update" parameterType="papermgr.base.model.Paperquestion" >
+    update paperquestion
+    <set >
+      <if test="paperid != null" >
+        paperId = #{paperid},
+      </if>
+      <if test="questionid != null" >
+        questionId = #{questionid}
+      </if>
+    </set>
+    where
+    paperQuestionId = #{paperquestionid}
+  </update>
+  
+  <delete id="batchDelete" >
+    delete from paperquestion
+    where paperQuestionId in(
+    <foreach item="item" collection="list" separator="," >
+      #{item}
+    </foreach>
+    )
+  </delete>
+  
+  <delete id="deleteByPaperId" >
+    delete from paperquestion
+    where paperId in(
+    <foreach item="item" collection="list" separator="," >
+      #{item}
+    </foreach>
+    )
+  </delete>
+  
+  <select id="getListWithPage" resultType="papermgr.base.model.Paperquestion" parameterType="papermgr.base.model.Paperquestion" >
+    select * from paperquestion
+    where 1=1
+    <if test="paperquestionid != null" >
+      and paperQuestionId = #{paperquestionid}
+    </if>
+    <if test="paperid != null" >
+      and paperId = #{paperid}
+    </if>
+    <if test="questionid != null" >
+      and questionId = #{questionid}
+    </if>
+  </select>
+  
+  <select id="count" resultType="java.lang.Long" parameterType="papermgr.base.model.Paperquestion" >
+    select count(*) from paperquestion
+    where 1=1
+    <if test="paperquestionid != null" >
+      and paperQuestionId = #{paperquestionid}
+    </if>
+    <if test="paperid != null" >
+      and paperId = #{paperid}
+    </if>
+    <if test="questionid != null" >
+      and questionId = #{questionid}
+    </if>
+  </select>
+  
+</mapper>

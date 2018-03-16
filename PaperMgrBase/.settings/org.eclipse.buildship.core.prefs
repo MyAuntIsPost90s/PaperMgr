@@ -1,0 +1,8 @@
+#Thu Mar 08 10:16:49 CST 2018
+connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)
+override.workspace.settings=true
+auto.sync=false
+gradle.user.home=C\:/DevelopTool/gradle-4.4.1
+connection.project.dir=
+offline.mode=false
+build.scans.enabled=false

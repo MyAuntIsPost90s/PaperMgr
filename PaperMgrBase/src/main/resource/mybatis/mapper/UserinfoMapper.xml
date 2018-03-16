@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="papermgr.base.dao.UserinfoMapper" >
+  <select id="getList" resultType="papermgr.base.model.Userinfo" parameterType="papermgr.base.model.Userinfo" >
+    select * from userinfo
+    where 1=1
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="username != null" >
+      and userName = #{username}
+    </if>
+    <if test="password != null" >
+      and password = #{password}
+    </if>
+    <if test="realname != null" >
+      and realname = #{realname}
+    </if>
+    <if test="headimgurl != null" >
+      and headImgUrl = #{headimgurl}
+    </if>
+    <if test="usertype != null" >
+      and userType = #{usertype}
+    </if>
+    <if test="createtime != null" >
+      and createTime = #{createtime}
+    </if>
+  </select>
+  
+  <select id="getSingle" resultType="papermgr.base.model.Userinfo" >
+    select * from userinfo
+    where userId = #{id}
+    limit 0,1
+  </select>
+  
+  <insert id="insert" parameterType="papermgr.base.model.Userinfo" >
+    insert into userinfo
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="username != null" >
+        userName,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="realname != null" >
+        realname,
+      </if>
+      <if test="headimgurl != null" >
+        headImgUrl,
+      </if>
+      <if test="usertype != null" >
+        userType,
+      </if>
+      <if test="createtime != null" >
+        createTime
+      </if>
+    </trim>
+    <trim prefix="values(" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        #{userid},
+      </if>
+      <if test="username != null" >
+        #{username},
+      </if>
+      <if test="password != null" >
+        #{password},
+      </if>
+      <if test="realname != null" >
+        #{realname},
+      </if>
+      <if test="headimgurl != null" >
+        #{headimgurl},
+      </if>
+      <if test="usertype != null" >
+        #{usertype},
+      </if>
+      <if test="createtime != null" >
+        #{createtime}
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="update" parameterType="papermgr.base.model.Userinfo" >
+    update userinfo
+    <set >
+      <if test="username != null" >
+        userName = #{username},
+      </if>
+      <if test="password != null" >
+        password = #{password},
+      </if>
+      <if test="realname != null" >
+        realname = #{realname},
+      </if>
+      <if test="headimgurl != null" >
+        headImgUrl = #{headimgurl},
+      </if>
+      <if test="usertype != null" >
+        userType = #{usertype},
+      </if>
+      <if test="createtime != null" >
+        createTime = #{createtime}
+      </if>
+    </set>
+    where
+    userId = #{userid}
+  </update>
+  
+  <delete id="batchDelete" >
+    delete from userinfo
+    where userId in(
+    <foreach item="item" collection="list" separator="," >
+      #{item}
+    </foreach>
+    )
+  </delete>
+  
+  <select id="getListWithPage" resultType="papermgr.base.model.Userinfo" parameterType="papermgr.base.model.Userinfo" >
+    select * from userinfo
+    where 1=1
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="username != null" >
+      and userName = #{username}
+    </if>
+    <if test="password != null" >
+      and password = #{password}
+    </if>
+    <if test="realname != null" >
+      and realname = #{realname}
+    </if>
+    <if test="headimgurl != null" >
+      and headImgUrl = #{headimgurl}
+    </if>
+    <if test="usertype != null" >
+      and userType = #{usertype}
+    </if>
+    <if test="createtime != null" >
+      and createTime = #{createtime}
+    </if>
+  </select>
+  
+  <select id="count" resultType="java.lang.Long" parameterType="papermgr.base.model.Userinfo" >
+    select count(*) from userinfo
+    where 1=1
+    <if test="userid != null" >
+      and userId = #{userid}
+    </if>
+    <if test="username != null" >
+      and userName = #{username}
+    </if>
+    <if test="password != null" >
+      and password = #{password}
+    </if>
+    <if test="realname != null" >
+      and realname = #{realname}
+    </if>
+    <if test="headimgurl != null" >
+      and headImgUrl = #{headimgurl}
+    </if>
+    <if test="usertype != null" >
+      and userType = #{usertype}
+    </if>
+    <if test="createtime != null" >
+      and createTime = #{createtime}
+    </if>
+  </select>
+  
+</mapper>

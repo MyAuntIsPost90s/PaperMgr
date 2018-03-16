@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>试题列表</title>
+    <link rel="stylesheet" href="../../Contents/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/easyui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/icon.css">
+    <script src="../../Contents/js/config.js"></script>
+    <script src="../../Contents/js/jquery.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/jquery.easyui.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../Contents/js/easyui.util.js"></script>
+    <script src="../../Contents/lib/lingshiframework/lingshi_base.js"></script>
+    <script src="../../Contents/js/md5.js"></script>
+    <script src="../../Contents/js/layui.util.js"></script>
+    <style>
+        #div-questionselect{
+            height: 160px;
+            overflow-y: auto;
+            border: 1px solid #D2D2D2!important
+        }
+        #div-questionselect div{
+            padding: 5px;
+            height: 20px;
+            border-bottom: 1px dashed #F2F2F2;
+        }
+        #div-questionselect span{
+            float: left;
+            height: 20px;
+            line-height: 20px;
+            color: #888;
+            width: 100px;
+            -ms-text-overflow: ellipsis;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        #div-questionselect .sp-tag{
+            width: 20px;
+        }
+        #div-questionselect div button{
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="easyui-layout" data-options='fit:"true"'>
+        <div data-options='region:"west"' style="width: 200px">
+            <ul id="tree-subject">
+
+            </ul>
+        </div>
+        <div data-options='region:"center"'>
+            <table id="table-question"></table>
+        </div>
+    </div>
+    <script id="lay-questionform" type="text/html">
+        <div style="padding: 10px;">
+            <form class="layui-form layui-form-pane" id="form-question">
+                <input id="opt-type" type="hidden" name="type" />
+                <input type="hidden" name="questionid" />
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">题目</label>
+                    <div class="layui-input-block">
+                        <textarea id="ta-questioncontent" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item  layui-form-text">
+                    <label class="layui-form-label">选项集合：</label>
+                    <div id="div-questionselect"></div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">选项：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="inp-select" class="layui-input" style="width: 130px;float: left" />
+                        <button type="button" class="layui-btn" onclick="addSelectItem()"><i class="layui-icon">&#xe654;</i></button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">答案</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="questionanswer" class="layui-input" data-valid="name:'答案',length:[0,200]" />
+                    </div>
+                </div>
+                <div class="layui-form-item" style="text-align: right">
+                    <button type="button" class="layui-btn" onclick="save()">保存</button>
+                </div>
+            </form>
+        </div>
+    </script>
+    <script src="../../Contents/lib/layui/layui.all.js"></script>
+    <script>
+        var subjectid='-1';
+        var tag=['A','B','C','D','E','F','G','H','I','J','K','L','M','N'];
+
+        $(function () {
+            initDataGrid();
+            EasyUIUtil.initTree('#tree-subject', Config.UrlHead + '/subject/tree');  //加载树
+            $('#tree-subject').tree({
+                onClick:function(node){
+                    subjectid=node.id;
+                    initDataGrid();
+                }
+            })
+        })
+
+        //保存
+        function save() {
+            var postData=FormUtil.getFormMap("#form-question");
+            postData.questionselect=getSelectItems();
+            postData.questioncontent=$('#ta-questioncontent').val();
+            postData.subjectid=subjectid;
+            postData.questiontype=1;
+            if(postData==null||postData==''){
+                return;
+            }
+            if(postData.questioncontent==''){
+                layer.msg('请输入题目');
+                return;
+            }
+            if(postData.questionselect==''){
+                layer.msg('请至少填写一个选项');
+                return;
+            }
+            var url=Config.UrlHead+'/question/add';
+            if(postData.type=='edit'){
+                url=Config.UrlHead+'/question/update';
+            }
+            $.post(url
+                ,postData
+                ,function (data) {
+                    if(data.code==1){
+                        layer.closeAll();
+                    }
+                    layer.msg(data.msg);
+                    $('#table-question').datagrid('reload');
+                },'json')
+        }
+
+        //批量删除
+        function batchDelete() {
+            var rows = $('#table-question').datagrid('getChecked');
+            if (rows.length < 1) {
+                return;
+            }
+            var ids = [];
+            for (var i = 0; i < rows.length; i++) {
+                ids.push(rows[i].userid);
+            }
+            layer.confirm("是否确定删除", function (index) {
+                $.ajax({
+                    url: Config.UrlHead + '/question/batchDelete',
+                    contentType: "application/json ; charset=utf-8",
+                    data: JSON.stringify(ids),
+                    method: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        layer.close(index);
+                        layer.msg(data.msg);
+                        $('#table-question').datagrid('reload');
+                    }
+                });
+            }, function (index) {
+                layer.close(index);
+            });
+        }
+
+        //删除选择项
+        function deleteSelectItem(obj){
+            $(obj).parent().remove();
+            updateSelectTag();
+        }
+
+        //添加选择项
+        function addSelectItem () {
+            var value=$('#inp-select').val();
+            if(value==''){
+                layer.msg('请输入选项后再添加');
+                return;
+            }
+            if(value.length>20){
+                layer.msg('选项长度不能超过20');
+                return;
+            }
+            if($('#div-questionselect div').length>13){
+                layer.msg('最多只能有14个选项');
+                return;
+            }
+
+            $('#div-questionselect').append('<div><span class="sp-tag"></span><span class="sp-val">'+ value +'</span><button class="layui-btn layui-btn-xs layui-btn-danger layui-icon" onclick="deleteSelectItem(this)">&#xe640;</button></div>')
+            $('#inp-select').val('');
+            updateSelectTag();
+        }
+
+        //更新选项标签
+        function updateSelectTag() {
+            var i=0;
+            $('#div-questionselect div').each(function(){
+                $(this).find('.sp-tag').html(tag[i++]);
+            })
+        }
+
+        //拼接选项
+        function getSelectItems(){
+            var result='';
+            $('#div-questionselect div').each(function(){
+                result += $(this).find('.sp-val').html()+',';
+            });
+            if(result.length>0){
+                result=result.substring(0,result.length-1);
+                console.log(result);
+            }
+            return result;
+        }
+
+        //设置选项
+        function setSelectItems(list){
+            var html='';
+            for(var i=0; i<list.length; i++){
+                if(list[i]==''){
+                    continue;
+                }
+                html+='<div><span class="sp-tag">'+tag[i]+'</span><span class="sp-val">'+ list[i] +'</span><button class="layui-btn layui-btn-xs layui-btn-danger layui-icon" onclick="deleteSelectItem(this)">&#xe640;</button></div>';
+            }
+            $('#div-questionselect').append(html);
+        }
+
+        //点击删除事件
+        function del(id) {
+            var ids = [];
+            ids.push(id);
+            layer.confirm("是否确定删除", function (index) {
+                $.ajax({
+                    url: Config.UrlHead + '/question/batchDelete',
+                    contentType: "application/json ; charset=utf-8",
+                    data: JSON.stringify(ids),
+                    method: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        layer.close(index);
+                        layer.msg(data.msg);
+                        $('#table-question').datagrid('reload');
+                    }
+                });
+            }, function (index) {
+                layer.close(index);
+            });
+        }
+
+        //展示添加用户
+        function showAddQuestion() {
+            if(subjectid=='-1'){
+                layer.msg('请选择一个类别');
+                return;
+            }
+            layer.open({
+                type:1
+                ,title:'添加'
+                ,content:$('#lay-questionform').html()
+                ,success:function(){
+                    FormUtil.loadForm('#form-question',{type:'add'});
+                    layui.form.render();
+                }
+            })
+        }
+
+        //展示编辑框
+        function showEdit(id){
+            var index = layer.open({type:3});
+            $.post(Config.UrlHead+'/question/single'
+                    ,{questionId:id}
+                    ,function (data) {
+                        layer.close(index);
+                        layer.open({
+                            type:1
+                            ,title:'修改'
+                            ,content:$('#lay-questionform').html()
+                            ,success:function(){
+                                data.data.type='edit';
+                                if(data.code==1){
+                                    setSelectItems(data.data.questionselect.split(','));
+                                    $('#ta-questioncontent').html(data.data.questioncontent);
+                                    FormUtil.loadForm('#form-question',data.data);
+                                }else {
+                                    layer.msg(data.msg);
+                                }
+                                layui.form.render();
+                            }
+                        })
+                },'json');
+        }
+
+        //初始化表格数据
+        function initDataGrid() {
+            EasyUIUtil.initDataGrid('#table-question', Config.UrlHead + "/question/list",getColumns(),{subjectid:subjectid,questiontype:1});
+            var pager=$('#table-question').datagrid('getPager');
+            pager.pagination({
+                showPageList: true,
+                buttons: [{
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        showAddQuestion();
+                    }
+                }, {
+                    iconCls: 'icon-remove',
+                    handler: function () {
+                        batchDelete();
+                    }
+                }],
+                onBeforeRefresh: function () {
+                    return true;
+                }
+            });
+        }
+
+        //获取列
+        function getColumns(){
+            var columns=[[
+                {field:'ck',checkbox:true},
+                {
+                    field:'questionid',
+                    width:50,
+                    align:'center',
+                    title:"操作",
+                    formatter:function(val,row){
+                        return '<button class="layui-btn layui-btn-xs layui-btn-danger" onclick="del(\'' + val + '\')"><i class="layui-icon">&#xe640;</i>移除</button>'
+                            +'<button class="layui-btn layui-btn-xs" onclick="showEdit(\'' + val + '\')"><i class="layui-icon">&#xe642;</i>编辑</button>'
+                    }
+                },
+                {field:'questioncontent',width:100,align:'center',title:"题目"},
+                {field:'questionanswer',width:100,align:'center',title:"答案"},
+                {field:'questiontime',width:100,align:'center',title:"创建时间"}
+            ]];
+            return columns;
+        }
+    </script>
+</body>
+</html>

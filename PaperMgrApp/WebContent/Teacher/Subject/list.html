@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分类列表</title>
+    <link rel="stylesheet" href="../../Contents/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/easyui.css">
+    <link rel="stylesheet" href="../../Contents/lib/easyui-theme/themes/insdep/icon.css">
+    <script src="../../Contents/js/config.js"></script>
+    <script src="../../Contents/js/jquery.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/jquery.easyui.min.js"></script>
+    <script src="../../Contents/lib/easyui-theme/locale/easyui-lang-zh_CN.js"></script>
+    <script src="../../Contents/js/easyui.util.js"></script>
+    <script src="../../Contents/lib/lingshiframework/lingshi_base.js"></script>
+    <script src="../../Contents/js/md5.js"></script>
+    <script src="../../Contents/js/layui.util.js"></script>
+</head>
+<body>
+    <div class="easyui-layout" data-options='fit:"true"'>
+        <table id="table-subject"></table>
+    </div>
+    <script id="lay-subjectform" type="text/html">
+        <div style="padding: 10px;">
+            <form class="layui-form layui-form-pane" id="form-subject">
+                <input id="opt-type" type="hidden" name="type" />
+                <input type="hidden" name="subjectid" />
+                <div class="layui-form-item">
+                    <label class="layui-form-label">名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="subjectname" placeholder="请输入名称" data-valid="name:'名称',length:[1,20]" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="text-align: right">
+                    <button type="button" class="layui-btn" onclick="save()">保存</button>
+                </div>
+            </form>
+        </div>
+    </script>
+    <script src="../../Contents/lib/layui/layui.all.js"></script>
+    <script>
+        $(function () {
+            initDataGrid();
+        })
+
+        //保存
+        function save() {
+            var postData=FormUtil.getFormMap("#form-subject");
+            if(postData==null||postData==''){
+                return;
+            }
+            var url=Config.UrlHead+'/subject/add';
+            if(postData.type=='edit'){
+                url=Config.UrlHead+'/subject/update';
+            }
+            $.post(url
+                ,postData
+                ,function (data) {
+                    if(data.code==1){
+                        layer.closeAll();
+                    }
+                    layer.msg(data.msg);
+                    $('#table-subject').datagrid('reload');
+                },'json')
+        }
+
+        //批量删除
+        function batchDelete() {
+            var rows = $('#table-subject').datagrid('getChecked');
+            if (rows.length < 1) {
+                return;
+            }
+            var ids = [];
+            for (var i = 0; i < rows.length; i++) {
+                ids.push(rows[i].userid);
+            }
+            layer.confirm("是否确定删除", function (index) {
+                $.ajax({
+                    url: Config.UrlHead + '/subject/batchDelete',
+                    contentType: "application/json ; charset=utf-8",
+                    data: JSON.stringify(ids),
+                    method: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        layer.close(index);
+                        layer.msg(data.msg);
+                        $('#table-subject').datagrid('reload');
+                    }
+                });
+            }, function (index) {
+                layer.close(index);
+            });
+        }
+
+        //点击删除事件
+        function del(id) {
+            var ids = [];
+            ids.push(id);
+            layer.confirm("是否确定删除", function (index) {
+                $.ajax({
+                    url: Config.UrlHead + '/subject/batchDelete',
+                    contentType: "application/json ; charset=utf-8",
+                    data: JSON.stringify(ids),
+                    method: 'post',
+                    dataType: 'json',
+                    success: function (data) {
+                        layer.close(index);
+                        layer.msg(data.msg);
+                        $('#table-subject').datagrid('reload');
+                    }
+                });
+            }, function (index) {
+                layer.close(index);
+            });
+        }
+
+        //展示添加用户
+        function showAddSubject() {
+            layer.open({
+                type:1
+                ,title:'添加'
+                ,content:$('#lay-subjectform').html()
+                ,success:function(){
+                    FormUtil.loadForm('#form-subject',{type:'add'});
+                    layui.form.render();
+                }
+            })
+        }
+
+        //展示编辑框
+        function showEdit(id){
+            var index = layer.open({type:3});
+            $.post(Config.UrlHead+'/subject/single'
+                    ,{subjectId:id}
+                    ,function (data) {
+                        layer.close(index);
+                        layer.open({
+                            type:1
+                            ,title:'修改'
+                            ,content:$('#lay-subjectform').html()
+                            ,success:function(){
+                                data.data.type='edit';
+                                if(data.code==1){
+                                    FormUtil.loadForm('#form-subject',data.data);
+                                }else {
+                                    layer.msg(data.msg);
+                                }
+                                layui.form.render();
+                            }
+                        })
+                },'json');
+        }
+
+        //初始化表格数据
+        function initDataGrid() {
+            EasyUIUtil.initDataGrid('#table-subject', Config.UrlHead + "/subject/list",getColumns(),{usertype:1});
+            var pager=$('#table-subject').datagrid('getPager');
+            pager.pagination({
+                showPageList: true,
+                buttons: [{
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        showAddSubject();
+                    }
+                }, {
+                    iconCls: 'icon-remove',
+                    handler: function () {
+                        batchDelete();
+                    }
+                }],
+                onBeforeRefresh: function () {
+                    return true;
+                }
+            });
+        }
+
+        //获取列
+        function getColumns(){
+            var columns=[[
+                {field:'ck',checkbox:true},
+                {
+                    field:'subjectid',
+                    width:50,
+                    align:'center',
+                    title:"操作",
+                    formatter:function(val,row){
+                        return '<button class="layui-btn layui-btn-xs layui-btn-danger" onclick="del(\'' + val + '\')"><i class="layui-icon">&#xe640;</i>移除</button>'
+                            +'<button class="layui-btn layui-btn-xs" onclick="showEdit(\'' + val + '\')"><i class="layui-icon">&#xe642;</i>编辑</button>'
+                    }
+                },
+                {field:'subjectname',width:100,align:'center',title:"名称"}
+            ]];
+            return columns;
+        }
+    </script>
+</body>
+</html>

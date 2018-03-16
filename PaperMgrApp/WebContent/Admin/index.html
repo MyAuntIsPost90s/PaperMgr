@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>在线试卷管理</title>
+    <link rel="stylesheet" href="../Contents/lib/layui/css/layui.css" />
+    <link rel="stylesheet" href="../Contents/css/layout.css?version=0">
+    <script src="../Contents/js/jquery.min.js"></script>
+    <script src="../Contents/js/config.js?version=0"></script>
+    <script src="../Contents/js/common.js"></script>
+    <script src="../Contents/lib/lingshiframework/lingshi_base.js?version=0"></script>
+    <script src="../Contents/js/layout.js"></script>
+</head>
+<body>
+<div class="layui-header header layui-bg-black layui-row">
+    <div class="layui-col-xs3 logo">Paper Online</div>
+    <div class="layui-col-xs3 layui-col-xs-offset6 opt">
+        <a onclick="loadWellcom()" style="cursor: pointer;">首页</a> |
+        <a style="cursor: pointer;" href="../login.html">退出</a>
+    </div>
+</div>
+<div class="container">
+    <div class="layui-inline layui-bg-black menu">
+        <div class="layui-row">
+            <div class="layui-inline headimg">
+                <img id="img-userhead" class="layui-nav-img" src="../Contents/images/dfthead.png"/>
+            </div>
+            <div class="layui-inline info">
+                <div id="div-realname">超级管理员</div>
+                <div id="div-username">root</div>
+            </div>
+        </div>
+        <ul class="layui-nav layui-nav-tree" lay-filter="test">
+            <li class="layui-nav-item layui-nav-itemed">
+                <a href="javascript:;">账号管理</a>
+                <dl class="layui-nav-child">
+                    <dd><a data-id="UserInfo/list.html">账号管理</a></dd>
+                </dl>
+                <dl class="layui-nav-child">
+                    <dd><a data-id="UserInfo/me.html">个人中心</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main layui-inline">
+        <div class="layui-tab layui-tab-card" lay-filter="tab" lay-allowclose="true">
+            <ul class="layui-tab-title"></ul>
+            <div class="layui-tab-content"></div>
+        </div>
+    </div>
+</div>
+<div class="layui-footer layui-bg-black"> build by lingshi </div>
+
+<script src="../Contents/lib/layui/layui.all.js"></script>
+<script>
+    $(function () {
+        loadMe();
+        loadWellcom();
+    })
+
+    //栏目点击事件
+    $('.layui-nav-item dd').click(function () {
+        var id=$(this).find('a').attr('data-id');
+        var text=$(this).find('a').text();
+        loadPage(id,text);
+    })
+
+    //加载欢迎页面
+    function loadWellcom() {
+        loadPage('wellcome.html','欢迎使用');
+    }
+
+    //加载页面
+    function loadPage(id,text){
+        var count = $('li[lay-id="'+id+'"]').length;
+        if(count<1) {
+            layui.element.tabAdd('tab', {
+                title: text
+                , content: '<iframe src="'+id+'" style="width: 100%;border:none;height: 100%"></iframe>'
+                , id:id
+            });
+            layui.element.tabChange('tab', id);
+        }
+        if(count==1){
+            layui.element.tabChange('tab', id);
+        }
+    }
+
+    //加载我的信息
+    function loadMe() {
+        $.post(Config.UrlHead+'/userInfo/nowUser'
+            ,function (data) {
+                if(data.code==1){
+                    if(data.data.headimgurl!=null&&data.data.headimgurl!=''){
+                        $('#img-userhead').attr('src',Config.UrlHead+data.data.headimgurl);
+                    }
+                    $('#div-username').html(data.data.username);
+                    $('#div-realname').html(data.data.realname);
+                    return;
+                }
+                layer.msg(data.msg);
+            },'json')
+    }
+</script>
+</body>
+</html>
