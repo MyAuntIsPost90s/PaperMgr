@@ -206,7 +206,7 @@
             },'json');
         //加载题目信息
         $.post(Config.UrlHead+'/paperQuestion/list'
-            ,{ paperId: paperId }
+            ,{ paperid: paperId }
             ,function(data){
                 if(data.data==null||data.data.length<1){
                     return;

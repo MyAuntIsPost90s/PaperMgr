@@ -27,6 +27,7 @@
 	
 	<bean id="LingShiConfig" class="lingshi.model.LingShiConfig" >
 		<property name="appKey" value="LINGSHI8"/>
+		<property name="useSSO" value="true"/>
 	</bean>
 	
 	<context:component-scan base-package="papermgr"/>

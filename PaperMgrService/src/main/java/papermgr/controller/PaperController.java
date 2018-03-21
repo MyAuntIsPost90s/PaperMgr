@@ -153,12 +153,13 @@ public class PaperController {
 
 			// 启动word
 			Dispatch wordDoc = app.getProperty("Documents").toDispatch();
-			wordDoc = Dispatch.invoke(wordDoc, "Add", Dispatch.Method, new Object[0], new int[1]).toDispatch();
-			Dispatch.invoke(app.getProperty("Selection").toDispatch(), "InsertFile", Dispatch.Method,
-					new Object[] { tempHtmlPath, "", new Variant(false), new Variant(false), new Variant(false) }, new int[3]);
-			Dispatch.invoke(wordDoc, "SaveAs", Dispatch.Method, new Object[] { tempWordPath, new Variant(1) },
+			Dispatch doc = Dispatch
+					.invoke(wordDoc, "Open", Dispatch.Method,
+							new Object[] { tempHtmlPath, new Variant(false), new Variant(true) }, new int[1])
+					.toDispatch();
+			Dispatch.invoke(doc, "SaveAs", Dispatch.Method, new Object[] { tempWordPath, new Variant(1) },
 					new int[1]);
-			Dispatch.call(wordDoc, "Close", new Variant(false));
+			Dispatch.call(doc, "Close", new Variant(false));
 
 			request.setCharacterEncoding("utf-8");
 			response.setContentType("application/force-download");// 设置强制下载不打开
