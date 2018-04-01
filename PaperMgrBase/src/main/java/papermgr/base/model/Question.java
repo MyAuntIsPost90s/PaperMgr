@@ -2,80 +2,84 @@ package papermgr.base.model;
 
 import java.util.Date;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
-import com.alibaba.fastjson.annotation.JSONField;
-
 public class Question {
-	private String questionid;
+    private String questionid;
 
-	private String questioncontent;
+    private String questioncontent;
 
-	private String questionselect;
+    private String questionselect;
 
-	private String questionanswer;
+    private String questionanswer;
 
-	private Integer questiontype;
+    private Integer questiontype;
 
-	private String subjectid;
+    private String subjectid;
 
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
-	private Date questiontime;
+    private Date questiontime;
 
-	public String getQuestionid() {
-		return questionid;
-	}
+    private Integer questionratio;
 
-	public void setQuestionid(String questionid) {
-		this.questionid = questionid;
-	}
+    public String getQuestionid() {
+        return questionid;
+    }
 
-	public String getQuestioncontent() {
-		return questioncontent;
-	}
+    public void setQuestionid(String questionid) {
+        this.questionid = questionid;
+    }
 
-	public void setQuestioncontent(String questioncontent) {
-		this.questioncontent = questioncontent;
-	}
+    public String getQuestioncontent() {
+        return questioncontent;
+    }
 
-	public String getQuestionselect() {
-		return questionselect;
-	}
+    public void setQuestioncontent(String questioncontent) {
+        this.questioncontent = questioncontent;
+    }
 
-	public void setQuestionselect(String questionselect) {
-		this.questionselect = questionselect;
-	}
+    public String getQuestionselect() {
+        return questionselect;
+    }
 
-	public String getQuestionanswer() {
-		return questionanswer;
-	}
+    public void setQuestionselect(String questionselect) {
+        this.questionselect = questionselect;
+    }
 
-	public void setQuestionanswer(String questionanswer) {
-		this.questionanswer = questionanswer;
-	}
+    public String getQuestionanswer() {
+        return questionanswer;
+    }
 
-	public Integer getQuestiontype() {
-		return questiontype;
-	}
+    public void setQuestionanswer(String questionanswer) {
+        this.questionanswer = questionanswer;
+    }
 
-	public void setQuestiontype(Integer questiontype) {
-		this.questiontype = questiontype;
-	}
+    public Integer getQuestiontype() {
+        return questiontype;
+    }
 
-	public String getSubjectid() {
-		return subjectid;
-	}
+    public void setQuestiontype(Integer questiontype) {
+        this.questiontype = questiontype;
+    }
 
-	public void setSubjectid(String subjectid) {
-		this.subjectid = subjectid;
-	}
+    public String getSubjectid() {
+        return subjectid;
+    }
 
-	public Date getQuestiontime() {
-		return questiontime;
-	}
+    public void setSubjectid(String subjectid) {
+        this.subjectid = subjectid;
+    }
 
-	public void setQuestiontime(Date questiontime) {
-		this.questiontime = questiontime;
-	}
+    public Date getQuestiontime() {
+        return questiontime;
+    }
+
+    public void setQuestiontime(Date questiontime) {
+        this.questiontime = questiontime;
+    }
+
+    public Integer getQuestionratio() {
+        return questionratio;
+    }
+
+    public void setQuestionratio(Integer questionratio) {
+        this.questionratio = questionratio;
+    }
 }

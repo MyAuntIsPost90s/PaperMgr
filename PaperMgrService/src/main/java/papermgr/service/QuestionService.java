@@ -1,5 +1,7 @@
 package papermgr.service;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import papermgr.base.model.Question;
@@ -25,4 +27,21 @@ public interface QuestionService {
 	void update(Question question);
 
 	void batchDelete(List<String> ids);
+
+	/**
+	 * 导入excel
+	 * 
+	 * @param fileInputStream
+	 * @param type
+	 * @throws Exception
+	 */
+	void importExcel(InputStream inputStream, int type) throws Exception;
+
+	/**
+	 * 下载导出模板
+	 * 
+	 * @param type
+	 * @throws Exception
+	 */
+	void downloadExcel(OutputStream outputStream, int type) throws Exception;
 }

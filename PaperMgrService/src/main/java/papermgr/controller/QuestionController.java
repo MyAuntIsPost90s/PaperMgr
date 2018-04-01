@@ -1,5 +1,6 @@
 package papermgr.controller;
 
+import java.io.InputStream;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -134,6 +135,49 @@ public class QuestionController {
 		RequestHolder requestHolder = RequestHolder.get(request, response);
 		try {
 			questionService.batchDelete(ids);
+			requestHolder.success("操作成功");
+		} catch (Exception e) {
+			requestHolder.err("操作失败", e);
+		}
+	}
+	
+	/**
+	 * 下载问题模板
+	 * 
+	 * @param request
+	 * @param response
+	 * @param type
+	 */
+	@ResponseBody
+	@RequestMapping("downloadExcel")
+	public void downloadExcel(HttpServletRequest request,HttpServletResponse response,int type){
+		RequestHolder requestHolder = RequestHolder.get(request, response);
+		try {
+			response.reset();
+			response.setContentType("application/vnd.ms-excel; charset=utf-8");
+			response.setHeader("Content-Disposition",
+					"attachment; filename=" + java.net.URLEncoder.encode("题目模板"+".xls", "UTF8"));
+			questionService.downloadExcel(response.getOutputStream(), type);
+			requestHolder.success("操作成功");
+		} catch (Exception e) {
+			requestHolder.err("操作失败", e);
+		}
+	}
+	
+	/**
+	 * 导入模板
+	 * 
+	 * @param request
+	 * @param response
+	 * @param type
+	 */
+	@ResponseBody
+	@RequestMapping("importExcel")
+	public void importExcel(HttpServletRequest request,HttpServletResponse response,int type){
+		RequestHolder requestHolder = RequestHolder.get(request, response);
+		try {
+			InputStream inputStream = requestHolder.getRequestFile().getFile().getInputStream();
+			questionService.importExcel(inputStream, type);
 			requestHolder.success("操作成功");
 		} catch (Exception e) {
 			requestHolder.err("操作失败", e);

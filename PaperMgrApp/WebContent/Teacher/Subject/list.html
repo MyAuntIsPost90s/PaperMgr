@@ -71,7 +71,7 @@
             }
             var ids = [];
             for (var i = 0; i < rows.length; i++) {
-                ids.push(rows[i].userid);
+                ids.push(rows[i].subjectid);
             }
             layer.confirm("是否确定删除", function (index) {
                 $.ajax({
@@ -153,6 +153,16 @@
         //初始化表格数据
         function initDataGrid() {
             EasyUIUtil.initDataGrid('#table-subject', Config.UrlHead + "/subject/list",getColumns(),{usertype:1});
+            $('#table-subject').datagrid({loadFilter: function (data) {
+                if (data.code == 0) {
+                    $.messager.alert("错误", data.msg);
+                    return null;
+                }
+                for(var i=0;i<data.data.rows.length;i++){
+                    data.data.rows[i].tag=data.data.rows[i].subjectid;
+                }
+                return data.data;
+            }})
             var pager=$('#table-subject').datagrid('getPager');
             pager.pagination({
                 showPageList: true,
@@ -187,7 +197,8 @@
                             +'<button class="layui-btn layui-btn-xs" onclick="showEdit(\'' + val + '\')"><i class="layui-icon">&#xe642;</i>编辑</button>'
                     }
                 },
-                {field:'subjectname',width:100,align:'center',title:"名称"}
+                {field:'subjectname',width:100,align:'center',title:"名称"},
+                {field:'tag',width:100,align:'center',title:"导出编号"}
             ]];
             return columns;
         }

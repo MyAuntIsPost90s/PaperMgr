@@ -25,6 +25,9 @@
     <if test="questiontime != null" >
       and questionTime = #{questiontime}
     </if>
+    <if test="questionratio != null" >
+      and questionRatio = #{questionratio}
+    </if>
   </select>
   
   <select id="getSingle" resultType="papermgr.base.model.Question" >
@@ -55,7 +58,10 @@
         subjectId,
       </if>
       <if test="questiontime != null" >
-        questionTime
+        questionTime,
+      </if>
+      <if test="questionratio != null" >
+        questionRatio
       </if>
     </trim>
     <trim prefix="values(" suffix=")" suffixOverrides="," >
@@ -78,7 +84,10 @@
         #{subjectid},
       </if>
       <if test="questiontime != null" >
-        #{questiontime}
+        #{questiontime},
+      </if>
+      <if test="questionratio != null" >
+        #{questionratio}
       </if>
     </trim>
   </insert>
@@ -102,7 +111,10 @@
         subjectId = #{subjectid},
       </if>
       <if test="questiontime != null" >
-        questionTime = #{questiontime}
+        questionTime = #{questiontime},
+      </if>
+      <if test="questionratio != null" >
+        questionRatio = #{questionratio}
       </if>
     </set>
     where
@@ -142,6 +154,9 @@
     <if test="questiontime != null" >
       and questionTime = #{questiontime}
     </if>
+    <if test="questionratio != null" >
+      and questionRatio = #{questionratio}
+    </if>
   </select>
   
   <select id="count" resultType="java.lang.Long" parameterType="papermgr.base.model.Question" >
@@ -168,6 +183,17 @@
     <if test="questiontime != null" >
       and questionTime = #{questiontime}
     </if>
+    <if test="questionratio != null" >
+      and questionRatio = #{questionratio}
+    </if>
   </select>
+  <insert id="batchInsert" parameterType="java.util.ArrayList" >
+    insert into question
+    (questionId,questionContent,questionSelect,questionAnswer,questionType,subjectId,questionTime,questionRatio)
+    values
+    <foreach collection="list" item="item" separator="," >
+    	(#{item.questionid},#{item.questioncontent},#{item.questionselect},#{item.questionanswer},#{item.questiontype},#{item.subjectid},#{item.questiontime},#{item.questionratio})
+    </foreach>
+  </insert>
   
 </mapper>

@@ -123,6 +123,9 @@ dependencies {
     //img thumbnailator
     compile 'net.coobird:thumbnailator:0.4.8'
     
+    //poi
+    compile 'org.apache.poi:poi:3.17'
+    
     compile files('src/main/webapp/WEB-INF/lib/lingshi_base.jar') //未加入maven中央库,需要手动加到本地仓库
     compile files('src/main/webapp/WEB-INF/lib/PaperMgrBase.jar') //未加入maven中央库,需要手动加到本地仓库
     compile files('src/main/webapp/WEB-INF/lib/jacob.jar')
