@@ -7,6 +7,12 @@ import papermgr.base.model.Question;
 
 public interface PaperQuestionService {
 
+	/**
+	 * 获取单条文件信息
+	 * 
+	 * @param paperquestionId
+	 * @return
+	 */
 	Paperquestion single(String paperquestionId);
 
 	List<Question> list(Paperquestion paperquestion);
