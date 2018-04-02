@@ -15,6 +15,12 @@ public interface PaperQuestionService {
 	 */
 	Paperquestion single(String paperquestionId);
 
+	/**
+	 * 获取文件集合
+	 * 
+	 * @param paperquestion
+	 * @return
+	 */
 	List<Question> list(Paperquestion paperquestion);
 
 	void add(Paperquestion paperquestion) throws Exception;
