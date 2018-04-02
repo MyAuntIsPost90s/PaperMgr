@@ -2,6 +2,10 @@ package papermgr.base.model;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.alibaba.fastjson.annotation.JSONField;
+
 public class Question {
     private String questionid;
 
@@ -15,6 +19,8 @@ public class Question {
 
     private String subjectid;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date questiontime;
 
     private Integer questionratio;
