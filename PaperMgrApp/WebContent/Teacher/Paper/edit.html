@@ -53,13 +53,17 @@
         <div id="div-select" style="width: 100%;display: none;">
             <div class="question-title" style=" width: 100%; padding: 10px;font-size: 16px;font-weight: 600;">一、选择题</div>
         </div>
+        <!-- 判断题 -->
+        <div id="div-judge" style="width: 100%;display: none;">
+            <div class="question-title" style=" width: 100%; padding: 10px;font-size: 16px;font-weight: 600;">二、判断题</div>
+        </div>
         <!-- 填空题 -->
         <div id="div-fill"  style="width: 100%;display: none;">
-            <div class="question-title" style=" width: 100%; padding: 10px;font-size: 16px;font-weight: 600;">二、填空题</div>
+            <div class="question-title" style=" width: 100%; padding: 10px;font-size: 16px;font-weight: 600;">三、填空题</div>
         </div>
         <!-- 解析题 -->
         <div id="div-text" style="width: 100%;display: none;">
-            <div class="question-title" style=" width: 100%; padding: 10px;font-size: 16px;font-weight: 600;">三、解析题</div>
+            <div class="question-title" style=" width: 100%; padding: 10px;font-size: 16px;font-weight: 600;">四、解析题</div>
         </div>
     </div>
 </div>
@@ -69,13 +73,22 @@
     {{# layui.each(d, function(index, item){ }}
         <div class="div-questionitem" style="padding: 5px 50px; position: relative" data-questionid="{{ item.questionid }}" data-questiontype="1" >
             <button class="layui-btn-xs layui-btn layui-btn-danger btn-change" onclick="showChangeQuestion('{{ item.questionid }}',1)">更换</button>
-            <div style="padding: 2px 0;">{{ (item.index==null?index+1:item.index) + '.' + item.questioncontent }}</div>
+            <div style="padding: 2px 0;">{{ (item.index==null?index+1:item.index) + '.' + item.questioncontent }} ( )</div>
             <ul>
                 {{# layui.each(item.questionselect.split(','), function(index, selectitem){ }}
                     <li style="padding: 2px 0;">{{ tag[index] }}:{{ selectitem }}</li>
                 {{# }) }}
             </ul>
         </div>
+    {{# }) }}
+</script>
+<!-- 判断题 -->
+<script id="lay-judge" type="text/html">
+    {{# layui.each(d, function(index, item){ }}
+    <div class="div-questionitem" style="padding: 5px 50px; position: relative" data-questionid="{{ item.questionid }}" data-questiontype="4" >
+        <button class="layui-btn-xs layui-btn layui-btn-danger btn-change" onclick="showChangeQuestion('{{ item.questionid }}',4)">更换</button>
+        <div style="padding: 2px 0;">{{ (item.index==null?index+1:item.index) + '.' + item.questioncontent }} ( )</div>
+    </div>
     {{# }) }}
 </script>
 <!-- 填空题 -->
@@ -105,7 +118,7 @@
 <script src="../../Contents/lib/layui/layui.all.js"></script>
 <script>
     var tag=['A','B','C','D','E','F','G','H','I','J','K','L','M','N'];
-    var tatleTag=['一、','二、','三、'];
+    var tatleTag=['一、','二、','三、','四、'];
     var subjectid=null;
     var selectQuestionId=null;
     var winType='add';
@@ -126,6 +139,7 @@
         var selectcount = LingShiUtil.getParam('selectcount');
         var fillcount = LingShiUtil.getParam('fillcount');
         var textcount = LingShiUtil.getParam('textcount');
+        var judgecount=LingShiUtil.getParam('judgecount');
         var papertitle = decodeURI(LingShiUtil.getParam('papertitle'));
         FormUtil.loadForm('#form-paper', {papertitle: papertitle});
         $('input[name=papertitle]').change();
@@ -150,6 +164,25 @@
                     $('#div-select .question-title').html(tatleTag[i++]+'选择题');
                     $('#div-select .question-title').after(html);
                     $('#div-select').show();
+                });
+            }, 'json');
+        //获取判断题
+        $.post(Config.UrlHead + '/question/ramdonList'
+            , {subjectid: subjectid, count: judgecount, questiontype: 4}
+            , function (data) {
+                if(data.code==-1){
+                    layer.msg('操作失败');
+                    return;
+                }
+                if(data.data==null||data.data.length<1){
+                    return;
+                }
+
+                var tempStr=$('#lay-judge').html();
+                layui.laytpl(tempStr).render(data.data, function(html){
+                    $('#div-judge .question-title').html(tatleTag[i++]+'判断题');
+                    $('#div-judge .question-title').after(html);
+                    $('#div-judge').show();
                 });
             }, 'json');
         //获取填空题
@@ -214,6 +247,7 @@
                 var selectQuestions=[];
                 var fillQuestions=[];
                 var textQuestoin=[];
+                var judgeQuestoin=[];
                 for(var i=0;i<data.data.length;i++){
                     if(data.data[i].questiontype==1){
                         selectQuestions.push(data.data[i]);
@@ -224,6 +258,9 @@
                     if(data.data[i].questiontype==3){
                         textQuestoin.push(data.data[i]);
                     }
+                    if(data.data[i].questiontype==4){
+                        judgeQuestoin.push(data.data[i]);
+                    }
                 }
                 var i=0;
                 var tempStr=null;
@@ -233,6 +270,14 @@
                         $('#div-select .question-title').html(tatleTag[i++] + '选择题');
                         $('#div-select .question-title').after(html);
                         $('#div-select').show();
+                    });
+                }
+                if(judgeQuestoin.length>0) {
+                    tempStr=$('#lay-judge').html();
+                    layui.laytpl(tempStr).render(judgeQuestoin, function(html){
+                        $('#div-judge .question-title').html(tatleTag[i++]+'判断题');
+                        $('#div-judge .question-title').after(html);
+                        $('#div-judge').show();
                     });
                 }
                 if(fillQuestions.length>0) {
@@ -246,7 +291,7 @@
                 if(textQuestoin.length>0) {
                     tempStr=$('#lay-text').html();
                     layui.laytpl(tempStr).render(textQuestoin, function(html){
-                        $('#div-text .question-title').html(tatleTag[i++]+'填空题');
+                        $('#div-text .question-title').html(tatleTag[i++]+'解析题');
                         $('#div-text .question-title').after(html);
                         $('#div-text').show();
                     });
@@ -358,6 +403,12 @@
                 }
                 if(type=='3'){
                     var tempStr=$('#lay-text').html();
+                    layui.laytpl(tempStr).render(obj, function(html){
+                        temp=html;
+                    });
+                }
+                if(type=='4'){
+                    var tempStr=$('#lay-judge').html();
                     layui.laytpl(tempStr).render(obj, function(html){
                         temp=html;
                     });

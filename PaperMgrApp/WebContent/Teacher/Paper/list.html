@@ -44,6 +44,12 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
+                    <label class="layui-form-label">判断题数量</label>
+                    <div class="layui-input-block">
+                        <input type="number" name="judgecount" placeholder="选择题数量" data-valid="name:'选择题数量',length:[1,2]" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
                     <label class="layui-form-label">填空题数量</label>
                     <div class="layui-input-block">
                         <input type="number" name="fillcount" placeholder="填空题数量" data-valid="name:'填空题数量',length:[1,2]" autocomplete="off" class="layui-input">
@@ -85,6 +91,7 @@
                 +'&selectcount='+postData.selectcount
                 +'&fillcount='+postData.fillcount
                 +'&textcount='+postData.textcount
+                +'&judgecount='+postData.judgecount
                 +'&subjectid='+subjectid
                 +'&type=add');
         }
