@@ -63,7 +63,7 @@
         </div>
         <!-- 解析题 -->
         <div id="div-text" style="width: 100%;display: none;">
-            <div class="question-title" style=" width: 100%; padding: 10px;font-size: 16px;font-weight: 600;">四、解析题</div>
+            <div class="question-title" style=" width: 100%; padding: 10px;font-size: 16px;font-weight: 600;">四、解答题</div>
         </div>
     </div>
 </div>
@@ -218,7 +218,7 @@
 
                 var tempStr=$('#lay-text').html();
                 layui.laytpl(tempStr).render(data.data, function(html){
-                    $('#div-text .question-title').html(tatleTag[i++]+'解析题');
+                    $('#div-text .question-title').html(tatleTag[i++]+'解答题');
                     $('#div-text .question-title').after(html);
                     $('#div-text').show();
                 });
@@ -291,7 +291,7 @@
                 if(textQuestoin.length>0) {
                     tempStr=$('#lay-text').html();
                     layui.laytpl(tempStr).render(textQuestoin, function(html){
-                        $('#div-text .question-title').html(tatleTag[i++]+'解析题');
+                        $('#div-text .question-title').html(tatleTag[i++]+'解答题');
                         $('#div-text .question-title').after(html);
                         $('#div-text').show();
                     });
