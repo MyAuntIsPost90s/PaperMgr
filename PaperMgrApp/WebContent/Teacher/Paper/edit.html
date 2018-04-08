@@ -34,6 +34,13 @@
                 </div>
             </div>
             <div class="layui-form-item">
+                <label class="layui-form-label layui-inline" style="width: 30px">难度</label>
+                <div class="layui-input-inline" style="width: 140px;">
+                    <input type="text" name="questionratio" readonly data-valid="name:'难度',length:[1,20]"
+                           autocomplete="off" class="layui-input"  />
+                </div>
+            </div>
+            <div class="layui-form-item">
                 <label class="layui-form-label layui-inline" style="width: 30px">备注</label>
                 <div class="layui-input-inline" style="width: 140px;">
                     <input type="text" name="papernote" placeholder="请输入备注" data-valid="name:'备注',length:[0,20]"
@@ -71,7 +78,7 @@
 <!-- 选择题 -->
 <script id="lay-select" type="text/html">
     {{# layui.each(d, function(index, item){ }}
-        <div class="div-questionitem" style="padding: 5px 50px; position: relative" data-questionid="{{ item.questionid }}" data-questiontype="1" >
+        <div class="div-questionitem" style="padding: 5px 50px; position: relative" data-questionid="{{ item.questionid }}" data-questionratio="{{ item.questionratio }}" data-questiontype="1" >
             <button class="layui-btn-xs layui-btn layui-btn-danger btn-change" onclick="showChangeQuestion('{{ item.questionid }}',1)">更换</button>
             <div style="padding: 2px 0;">{{ (item.index==null?index+1:item.index) + '.' + item.questioncontent }} ( )</div>
             <ul>
@@ -85,7 +92,7 @@
 <!-- 判断题 -->
 <script id="lay-judge" type="text/html">
     {{# layui.each(d, function(index, item){ }}
-    <div class="div-questionitem" style="padding: 5px 50px; position: relative" data-questionid="{{ item.questionid }}" data-questiontype="4" >
+    <div class="div-questionitem" style="padding: 5px 50px; position: relative" data-questionid="{{ item.questionid }}" data-questionratio="{{ item.questionratio }}" data-questiontype="4" >
         <button class="layui-btn-xs layui-btn layui-btn-danger btn-change" onclick="showChangeQuestion('{{ item.questionid }}',4)">更换</button>
         <div style="padding: 2px 0;">{{ (item.index==null?index+1:item.index) + '.' + item.questioncontent }} ( )</div>
     </div>
@@ -94,7 +101,7 @@
 <!-- 填空题 -->
 <script id="lay-fill" type="text/html">
     {{# layui.each(d, function(index, item){ }}
-    <div class="div-questionitem" style="padding: 5px 50px;position: relative" data-questionid="{{ item.questionid }}" data-questiontype="2" >
+    <div class="div-questionitem" style="padding: 5px 50px;position: relative" data-questionid="{{ item.questionid }}" data-questionratio="{{ item.questionratio }}" data-questiontype="2" >
         <button class="layui-btn-xs layui-btn layui-btn-danger btn-change" onclick="showChangeQuestion('{{ item.questionid }}',2)">更换</button>
         <div style="padding: 2px 0;">{{ (item.index==null?index+1:item.index) + '.' + item.questioncontent }}</div>
     </div>
@@ -103,7 +110,7 @@
 <!-- 解析题 -->
 <script id="lay-text" type="text/html">
     {{# layui.each(d, function(index, item){ }}
-    <div class="div-questionitem" style="padding: 5px 50px;margin-bottom: 100px;height: auto;zoom:1;overflow: hidden;position: relative" data-questionid="{{ item.questionid }}" data-questiontype="3">
+    <div class="div-questionitem" style="padding: 5px 50px;margin-bottom: 100px;height: auto;zoom:1;overflow: hidden;position: relative" data-questionid="{{ item.questionid }}" data-questionratio="{{ item.questionratio }}" data-questiontype="3">
         <button class="layui-btn-xs layui-btn layui-btn-danger btn-change" onclick="showChangeQuestion('{{ item.questionid }}',3)">更换</button>
         <div style="padding: 2px 0;"><span style="float: left;padding-top: 2px;width: 1%">{{ item.index==null?index+1:item.index }}.</span> <div style="float: left;width: 99%">{{ item.questioncontent }}</div></div>
     </div>
@@ -132,6 +139,7 @@
         if(winType=='edit'){
             initEdit();
         }
+        countQuestionRatio();
     })
 
     //初始化题目
@@ -237,6 +245,8 @@
                 FormUtil.loadForm('#form-paper',data.data);
                 $('input[name=papertitle]').change();
             },'json');
+
+        $.ajaxSetup({ async:false });
         //加载题目信息
         $.post(Config.UrlHead+'/paperQuestion/list'
             ,{ paperid: paperId }
@@ -297,6 +307,22 @@
                     });
                 }
             },'json');
+        $.ajaxSetup({ async:true });
+    }
+
+    //统计难度系数平均值
+    function  countQuestionRatio() {
+        var sum=0;
+        var i=0;
+        $('.div-questionitem').each(function(){
+           var questionRatio=$(this).attr('data-questionratio');
+           if(questionRatio==null||questionRatio==null){
+               return;
+           }
+           sum += parseInt(questionRatio);
+           i++;
+        });
+        $('input[name=questionratio]').val(parseInt(sum/i));
     }
 
     //标题改变时同步改变标题
@@ -417,6 +443,7 @@
                 $div.remove();
 
                 layer.closeAll();
+                countQuestionRatio();
             },'json');
     }
 
@@ -434,7 +461,7 @@
             },
             {field:'questioncontent',width:100,align:'center',title:"题目"},
             {field:'questionanswer',width:100,align:'center',title:"答案"},
-            {field:'questiontime',width:100,align:'center',title:"创建时间"}
+            {field:'questionratio',width:50,align:'center',title:"难度系数"}
         ]];
         return columns;
     }

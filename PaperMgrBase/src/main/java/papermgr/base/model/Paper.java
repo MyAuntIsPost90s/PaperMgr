@@ -15,6 +15,8 @@ public class Paper {
 
     private String subjectid;
 
+    private Integer questionratio;
+
     public String getPaperid() {
         return paperid;
     }
@@ -61,5 +63,13 @@ public class Paper {
 
     public void setSubjectid(String subjectid) {
         this.subjectid = subjectid;
+    }
+
+    public Integer getQuestionratio() {
+        return questionratio;
+    }
+
+    public void setQuestionratio(Integer questionratio) {
+        this.questionratio = questionratio;
     }
 }

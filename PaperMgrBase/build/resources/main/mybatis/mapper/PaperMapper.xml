@@ -22,6 +22,9 @@
     <if test="subjectid != null" >
       and subjectId = #{subjectid}
     </if>
+    <if test="questionratio != null" >
+      and questionRatio = #{questionratio}
+    </if>
   </select>
   
   <select id="getSingle" resultType="papermgr.base.model.Paper" >
@@ -49,7 +52,10 @@
         paperTime,
       </if>
       <if test="subjectid != null" >
-        subjectId
+        subjectId,
+      </if>
+      <if test="questionratio != null" >
+        questionRatio
       </if>
     </trim>
     <trim prefix="values(" suffix=")" suffixOverrides="," >
@@ -69,7 +75,10 @@
         #{papertime},
       </if>
       <if test="subjectid != null" >
-        #{subjectid}
+        #{subjectid},
+      </if>
+      <if test="questionratio != null" >
+        #{questionratio}
       </if>
     </trim>
   </insert>
@@ -90,7 +99,10 @@
         paperTime = #{papertime},
       </if>
       <if test="subjectid != null" >
-        subjectId = #{subjectid}
+        subjectId = #{subjectid},
+      </if>
+      <if test="questionratio != null" >
+        questionRatio = #{questionratio}
       </if>
     </set>
     where
@@ -127,6 +139,9 @@
     <if test="subjectid != null" >
       and subjectId = #{subjectid}
     </if>
+    <if test="questionratio != null" >
+      and questionRatio = #{questionratio}
+    </if>
   </select>
   
   <select id="count" resultType="java.lang.Long" parameterType="papermgr.base.model.Paper" >
@@ -149,6 +164,9 @@
     </if>
     <if test="subjectid != null" >
       and subjectId = #{subjectid}
+    </if>
+    <if test="questionratio != null" >
+      and questionRatio = #{questionratio}
     </if>
   </select>
   
