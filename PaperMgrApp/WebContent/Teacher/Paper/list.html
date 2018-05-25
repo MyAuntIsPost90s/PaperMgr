@@ -86,6 +86,9 @@
         //生成试卷
         function beingPaper() {
             var postData = FormUtil.getFormMap('#form-paper');
+            if(postData==null){
+                return;
+            }
             layer.closeAll();
             window.open('edit.html?papertitle='+postData.papertitle
                 +'&selectcount='+postData.selectcount
