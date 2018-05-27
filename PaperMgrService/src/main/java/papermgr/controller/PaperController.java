@@ -20,7 +20,7 @@ import com.jacob.com.ComThread;
 import com.jacob.com.Dispatch;
 import com.jacob.com.Variant;
 
-import lingshi.web.model.RequestHolder;
+import lingshi.getway.model.RequestHolder;
 import papermgr.base.model.Paper;
 import papermgr.common.Constant;
 import papermgr.common.RandomNum;

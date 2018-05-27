@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lingshi.web.model.RequestHolder;
+import lingshi.getway.model.RequestHolder;
 import papermgr.base.model.Paperquestion;
 import papermgr.base.model.Question;
 import papermgr.service.PaperQuestionService;

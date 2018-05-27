@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import lingshi.web.model.RequestFile;
-import lingshi.web.model.RequestHolder;
+import lingshi.getway.model.RequestFile;
+import lingshi.getway.model.RequestHolder;
 import net.coobird.thumbnailator.Thumbnails;
 import papermgr.common.Constant;
 import papermgr.common.RandomNum;

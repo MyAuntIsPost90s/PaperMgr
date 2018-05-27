@@ -46,7 +46,7 @@
 
 	<filter>
 		<filter-name>EncodeFilter</filter-name>
-		<filter-class>lingshi.web.filter.EncodeFilter</filter-class>
+		<filter-class>lingshi.getway.filter.EncodeFilter</filter-class>
 		<init-param>
 			<param-name>charset</param-name>
 			<param-value>utf-8</param-value>
@@ -59,7 +59,7 @@
 
 	<filter>
 		<filter-name>TokenCheckFilter</filter-name>
-		<filter-class>lingshi.web.filter.TokenCheckFilter</filter-class>
+		<filter-class>lingshi.getway.filter.TokenCheckFilter</filter-class>
 		<init-param>
 			<param-name>allowpath</param-name>
 			<param-value>login,Uploadfile,upload,exportWord,download,import</param-value>

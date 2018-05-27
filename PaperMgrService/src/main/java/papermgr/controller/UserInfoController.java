@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lingshi.web.model.RequestHolder;
+import lingshi.getway.model.RequestHolder;
 import papermgr.base.model.Userinfo;
 import papermgr.service.UserInfoService;
 import papermgr.uimodel.EUIPageList;
@@ -117,7 +117,7 @@ public class UserInfoController {
 			Userinfo nowUser = (Userinfo) requestHolder.getClientUser();
 			if (nowUser.getUserid().equals(userinfo.getUserid())) { // 当修改用户为当前用户时
 				nowUser = userInfoService.single(nowUser.getUserid());
-				requestHolder.setClientUser(nowUser);
+				requestHolder.updateClientUser(nowUser);
 			}
 
 			requestHolder.success("操作成功");

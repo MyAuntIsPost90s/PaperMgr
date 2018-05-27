@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import lingshi.web.model.RequestHolder;
+import lingshi.getway.model.RequestHolder;
 import papermgr.base.model.Userinfo;
 import papermgr.service.UserInfoService;
 
@@ -38,7 +38,7 @@ public class AccountController {
 				return;
 			}
 
-			requestHolder.setClientUser(userinfo);
+			requestHolder.addClientUser(userinfo);
 			requestHolder.success(stringBuilder.toString(), userinfo);
 		} catch (Exception e) {
 			requestHolder.err("登陆失败", e);
