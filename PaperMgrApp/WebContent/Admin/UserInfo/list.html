@@ -16,224 +16,245 @@
     <script src="../../Contents/js/layui.util.js"></script>
 </head>
 <body>
-    <div class="easyui-layout" data-options='fit:"true"'>
-        <table id="table-userinfo"></table>
+<div class="easyui-layout" data-options='fit:"true"'>
+    <table id="table-userinfo"></table>
+</div>
+<script id="lay-userinfoform" type="text/html">
+    <div style="padding: 10px;">
+        <form class="layui-form layui-form-pane" id="form-userinfo">
+            <input id="opt-type" type="hidden" name="type"/>
+            <input type="hidden" name="userid"/>
+            <div class="layui-form-item">
+                <img id="img-headimgurl" data-src="" src="../../Contents/images/dfthead.png" height="115" width="115"/>
+            </div>
+            <div class="layui-form-item">
+                <button type="button" class="layui-btn" id="btn-headurl">
+                    <i class="layui-icon">&#xe67c;</i>上传图片
+                </button>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username" id="inp-username" required lay-verify="username"
+                           placeholder="请输入用户名" data-valid="name:'用户名',length:[1,20]" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">真实姓名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="realname" required lay-verify="realname" placeholder="请输入真实姓名"
+                           data-valid="name:'真实姓名',length:[1,20]" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" style="text-align: right">
+                <button type="button" class="layui-btn" onclick="save()">保存</button>
+            </div>
+        </form>
     </div>
-    <script id="lay-userinfoform" type="text/html">
-        <div style="padding: 10px;">
-            <form class="layui-form layui-form-pane" id="form-userinfo">
-                <input id="opt-type" type="hidden" name="type" />
-                <input type="hidden" name="userid" />
-                <div class="layui-form-item">
-                    <img id="img-headimgurl" data-src="" src="../../Contents/images/dfthead.png" height="115" width="115" />
-                </div>
-                <div class="layui-form-item">
-                    <button type="button" class="layui-btn" id="btn-headurl">
-                        <i class="layui-icon">&#xe67c;</i>上传图片
-                    </button>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">用户名</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="username" id="inp-username" required  lay-verify="username" placeholder="请输入用户名" data-valid="name:'用户名',length:[1,20]" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">真实姓名</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="realname" required  lay-verify="realname" placeholder="请输入真实姓名" data-valid="name:'真实姓名',length:[1,20]" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item" style="text-align: right">
-                    <button type="button" class="layui-btn" onclick="save()">保存</button>
-                </div>
-            </form>
-        </div>
-    </script>
-    <script src="../../Contents/lib/layui/layui.all.js"></script>
-    <script>
-        $(function () {
-            initDataGrid();
-        })
+</script>
+<script src="../../Contents/lib/layui/layui.all.js"></script>
+<script>
+    $(function () {
+        initDataGrid();
+    })
 
-        //保存
-        function save() {
-            var postData=FormUtil.getFormMap("#form-userinfo");
-            postData.headimgurl=$('#img-headimgurl').attr('data-src');
-            if(postData==null||postData==''){
-                return;
-            }
-            var url=Config.UrlHead+'/userInfo/add';
-            if(postData.type=='edit'){
-                url=Config.UrlHead+'/userInfo/update';
-            }
-            if(postData.type=='add'){
-                postData.password=hex_md5("123").toUpperCase();
-            }
-            $.post(url
-                ,postData
-                ,function (data) {
-                    if(data.code==1){
-                        layer.closeAll();
-                    }
+    //保存
+    function save() {
+        var postData = FormUtil.getFormMap("#form-userinfo");
+        postData.headimgurl = $('#img-headimgurl').attr('data-src');
+        if (postData == null || postData == '') {
+            return;
+        }
+        var url = Config.UrlHead + '/userInfo/add';
+        if (postData.type == 'edit') {
+            url = Config.UrlHead + '/userInfo/update';
+        }
+        if (postData.type == 'add') {
+            postData.password = hex_md5("123").toUpperCase();
+        }
+        $.post(url
+            , postData
+            , function (data) {
+                if (data.code == 1) {
+                    layer.closeAll();
+                }
+                layer.msg(data.msg);
+                $('#table-userinfo').datagrid('reload');
+            }, 'json')
+    }
+
+    //重置密码
+    function resetPwd(id) {
+        if (id == null || id == '') {
+            return;
+        }
+        var url = Config.UrlHead + '/userInfo/update';
+        $.post(url
+            , {userid: id, password: hex_md5("123").toUpperCase()}
+            , function (data) {
+                if (data.code == 1) {
+                    layer.closeAll();
+                }
+                layer.msg(data.msg);
+                $('#table-userinfo').datagrid('reload');
+            }, 'json')
+    }
+
+    //批量删除
+    function batchDelete() {
+        var rows = $('#table-userinfo').datagrid('getChecked');
+        if (rows.length < 1) {
+            return;
+        }
+        var ids = [];
+        for (var i = 0; i < rows.length; i++) {
+            ids.push(rows[i].userid);
+        }
+        layer.confirm("是否确定删除", function (index) {
+            $.ajax({
+                url: Config.UrlHead + '/userInfo/batchDelete',
+                contentType: "application/json ; charset=utf-8",
+                data: JSON.stringify(ids),
+                method: 'post',
+                dataType: 'json',
+                success: function (data) {
+                    layer.close(index);
                     layer.msg(data.msg);
                     $('#table-userinfo').datagrid('reload');
-                },'json')
-        }
-
-        //批量删除
-        function batchDelete() {
-            var rows = $('#table-userinfo').datagrid('getChecked');
-            if (rows.length < 1) {
-                return;
-            }
-            var ids = [];
-            for (var i = 0; i < rows.length; i++) {
-                ids.push(rows[i].userid);
-            }
-            layer.confirm("是否确定删除", function (index) {
-                $.ajax({
-                    url: Config.UrlHead + '/userInfo/batchDelete',
-                    contentType: "application/json ; charset=utf-8",
-                    data: JSON.stringify(ids),
-                    method: 'post',
-                    dataType: 'json',
-                    success: function (data) {
-                        layer.close(index);
-                        layer.msg(data.msg);
-                        $('#table-userinfo').datagrid('reload');
-                    }
-                });
-            }, function (index) {
-                layer.close(index);
-            });
-        }
-
-        //点击删除事件
-        function del(id) {
-            var ids = [];
-            ids.push(id);
-            layer.confirm("是否确定删除", function (index) {
-                $.ajax({
-                    url: Config.UrlHead + '/userInfo/batchDelete',
-                    contentType: "application/json ; charset=utf-8",
-                    data: JSON.stringify(ids),
-                    method: 'post',
-                    dataType: 'json',
-                    success: function (data) {
-                        layer.close(index);
-                        layer.msg(data.msg);
-                        $('#table-userinfo').datagrid('reload');
-                    }
-                });
-            }, function (index) {
-                layer.close(index);
-            });
-        }
-
-        //展示添加用户
-        function showAddUserinfo() {
-            layer.open({
-                type:1
-                ,title:'添加用户'
-                ,content:$('#lay-userinfoform').html()
-                ,success:function(){
-                    $('#inp-username').attr('readonly',false);
-                    FormUtil.loadForm('#form-userinfo',{type:'add'});
-                    layui.form.render();
-
-                    initUploader()
                 }
-            })
-        }
+            });
+        }, function (index) {
+            layer.close(index);
+        });
+    }
 
-        //展示编辑框
-        function showEdit(id){
-            var index = layer.open({type:3});
-            $.post(Config.UrlHead+'/userInfo/single'
-                    ,{userinfoid:id}
-                    ,function (data) {
-                        layer.close(index);
-                        layer.open({
-                            type:1
-                            ,title:'修改用户'
-                            ,content:$('#lay-userinfoform').html()
-                            ,success:function(){
-                                $('#inp-username').attr('readonly',true);
-                                data.data.type='edit';
-                                if(data.code==1){
-                                    if(data.data.headimgurl!=null&&data.data.headimgurl!=''){
-                                        $('#img-headimgurl').attr('data-src',data.data.headimgurl);
-                                        $('#img-headimgurl').attr("src",Config.UrlHead + data.data.headimgurl);
-                                    }
-                                    FormUtil.loadForm('#form-userinfo',data.data);
-                                }else {
-                                    layer.msg(data.msg);
-                                }
+    //点击删除事件
+    function del(id) {
+        var ids = [];
+        ids.push(id);
+        layer.confirm("是否确定删除", function (index) {
+            $.ajax({
+                url: Config.UrlHead + '/userInfo/batchDelete',
+                contentType: "application/json ; charset=utf-8",
+                data: JSON.stringify(ids),
+                method: 'post',
+                dataType: 'json',
+                success: function (data) {
+                    layer.close(index);
+                    layer.msg(data.msg);
+                    $('#table-userinfo').datagrid('reload');
+                }
+            });
+        }, function (index) {
+            layer.close(index);
+        });
+    }
 
-                                initUploader();
-                                layui.form.render();
+    //展示添加用户
+    function showAddUserinfo() {
+        layer.open({
+            type: 1
+            , title: '添加用户'
+            , content: $('#lay-userinfoform').html()
+            , success: function () {
+                $('#inp-username').attr('readonly', false);
+                FormUtil.loadForm('#form-userinfo', {type: 'add'});
+                layui.form.render();
+
+                initUploader()
+            }
+        })
+    }
+
+    //展示编辑框
+    function showEdit(id) {
+        var index = layer.open({type: 3});
+        $.post(Config.UrlHead + '/userInfo/single'
+            , {userinfoid: id}
+            , function (data) {
+                layer.close(index);
+                layer.open({
+                    type: 1
+                    , title: '修改用户'
+                    , content: $('#lay-userinfoform').html()
+                    , success: function () {
+                        $('#inp-username').attr('readonly', true);
+                        data.data.type = 'edit';
+                        if (data.code == 1) {
+                            if (data.data.headimgurl != null && data.data.headimgurl != '') {
+                                $('#img-headimgurl').attr('data-src', data.data.headimgurl);
+                                $('#img-headimgurl').attr("src", Config.UrlHead + data.data.headimgurl);
                             }
-                        })
-                },'json');
-        }
+                            FormUtil.loadForm('#form-userinfo', data.data);
+                        } else {
+                            layer.msg(data.msg);
+                        }
 
-        //初始话头像上传组件
-        function initUploader() {
-            layui.upload.render({
-                elem: '#btn-headurl' //绑定元素
-                , accept: 'images'
-                , data: {basePath:'/Uploadfile/userheads/'}
-                , url: Config.UrlHead + '/uploader/upload' //上传接口
-                , done: function (res) {
-                    $('#img-headimgurl').attr("data-src", res.data);
-                    $('#img-headimgurl').attr("src",Config.UrlHead + res.data);
+                        initUploader();
+                        layui.form.render();
+                    }
+                })
+            }, 'json');
+    }
+
+    //初始话头像上传组件
+    function initUploader() {
+        layui.upload.render({
+            elem: '#btn-headurl' //绑定元素
+            , accept: 'images'
+            , data: {basePath: '/Uploadfile/userheads/'}
+            , url: Config.UrlHead + '/uploader/upload' //上传接口
+            , done: function (res) {
+                $('#img-headimgurl').attr("data-src", res.data);
+                $('#img-headimgurl').attr("src", Config.UrlHead + res.data);
+            }
+        });
+    }
+
+    //初始化表格数据
+    function initDataGrid() {
+        EasyUIUtil.initDataGrid('#table-userinfo', Config.UrlHead + "/userInfo/list", getColumns(), {usertype: 1});
+        var pager = $('#table-userinfo').datagrid('getPager');
+        pager.pagination({
+            showPageList: true,
+            buttons: [{
+                iconCls: 'icon-add',
+                handler: function () {
+                    showAddUserinfo();
                 }
-            });
-        }
-
-        //初始化表格数据
-        function initDataGrid() {
-            EasyUIUtil.initDataGrid('#table-userinfo', Config.UrlHead + "/userInfo/list",getColumns(),{usertype:1});
-            var pager=$('#table-userinfo').datagrid('getPager');
-            pager.pagination({
-                showPageList: true,
-                buttons: [{
-                    iconCls: 'icon-add',
-                    handler: function () {
-                        showAddUserinfo();
-                    }
-                }, {
-                    iconCls: 'icon-remove',
-                    handler: function () {
-                        batchDelete();
-                    }
-                }],
-                onBeforeRefresh: function () {
-                    return true;
+            }, {
+                iconCls: 'icon-remove',
+                handler: function () {
+                    batchDelete();
                 }
-            });
-        }
+            }],
+            onBeforeRefresh: function () {
+                return true;
+            }
+        });
+    }
 
-        //获取列
-        function getColumns(){
-            var columns=[[
-                {field:'ck',checkbox:true},
-                {
-                    field:'userid',
-                    width:50,
-                    align:'center',
-                    title:"操作",
-                    formatter:function(val,row){
-                        return '<button class="layui-btn layui-btn-xs layui-btn-danger" onclick="del(\'' + val + '\')"><i class="layui-icon">&#xe640;</i>移除</button>'
-                            +'<button class="layui-btn layui-btn-xs" onclick="showEdit(\'' + val + '\')"><i class="layui-icon">&#xe642;</i>编辑</button>'
-                    }
-                },
-                {field:'username',width:100,align:'center',title:"用户名"},
-                {field:'realname',width:100,align:'center',title:"名称"}
-            ]];
-            return columns;
-        }
-    </script>
+    //获取列
+    function getColumns() {
+        var columns = [[
+            {field: 'ck', checkbox: true},
+            {
+                field: 'userid',
+                width: 50,
+                align: 'center',
+                title: "操作",
+                formatter: function (val, row) {
+                    return '<button class="layui-btn layui-btn-xs layui-btn-danger" onclick="del(\'' + val + '\')"><i class="layui-icon">&#xe640;</i>移除</button>'
+                        + '<button class="layui-btn layui-btn-xs" onclick="showEdit(\'' + val + '\')"><i class="layui-icon">&#xe642;</i>编辑</button>'
+                        + '<button class="layui-btn layui-btn-xs layui-btn-primary" onclick="resetPwd(\'' + val + '\')"><i class="layui-icon">&#xe642;</i>重置密码</button>'
+                }
+            },
+            {field: 'username', width: 100, align: 'center', title: "用户名"},
+            {field: 'realname', width: 100, align: 'center', title: "名称"}
+        ]];
+        return columns;
+    }
+</script>
 </body>
 </html>
