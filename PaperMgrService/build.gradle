@@ -13,6 +13,9 @@ apply plugin: 'org.akhikhl.gretty'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
+ 	mavenLocal()
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
+    maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
     jcenter()
 }
 
@@ -45,15 +48,31 @@ targetCompatibility = 1.8
 //设置编码格式
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
+//配置参数
+processResources {
+    String env = System.getProperty("profile","local")
+    println "Current env is '" + env + "'"
+    def config = new ConfigSlurper(env).parse(file('profile.groovy').toURI().toURL()).toProperties()
+    from(sourceSets.main.resources.srcDirs) {
+        filesMatching('**/*.properties') {
+            filter(org.apache.tools.ant.filters.ReplaceTokens,tokens:config,beginToken:'#',endToken:'#')
+        }
+    }
+}
+
 //gretty配置
 buildscript {
     repositories {
+    	 mavenLocal()
+    	 maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
+    	 maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
          jcenter()
     }
     dependencies {
          classpath 'org.akhikhl.gretty:gretty:+'
     }
 }
+
 gretty {
 	httpPort=8081
     contextPath ="/${project.name}"  

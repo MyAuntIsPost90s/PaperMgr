@@ -24,7 +24,7 @@
         <!-- 自动扫描mapping.xml文件 -->  
         <property name="mapperLocations" value="classpath:/mybatis/mapper/*Mapper.xml"></property>  
     </bean>
-	<!-- 自动扫描所有的Mapper接口与文件 -->
+	<!-- 自动扫描所有有的Mapper接口与文件 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="papermgr.base.dao"></property>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
